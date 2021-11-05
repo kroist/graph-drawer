@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <vector>
 
 
 int main(int argc, char* argv[]) {
@@ -22,7 +21,6 @@ int main(int argc, char* argv[]) {
     std::ofstream ofs("graph.txt");
 
     if (s == "tree") {
-        std::vector<std::pair<int, int> > vec;
         ofs << n << ' ' << n-1 << std::endl;
         for (int i = 1; i < n; i++) {
             int j = rand()%i;
@@ -31,11 +29,22 @@ int main(int argc, char* argv[]) {
 
     }
     else if (s == "complete") {
-        std::vector<std::pair<int, int> > vec;
         ofs << n << ' ' << n*(n-1)/2 << std::endl;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < i; j++)
                 ofs << i << ' ' << j << std::endl;
+        }
+    } else if (s == "bipartite") {
+        ofs << 2 * n << ' ' << n * n << std::endl;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                ofs << i << ' ' << j + n << std::endl;
+            }
+        }
+    } else if (s == "star") {
+        ofs << n << ' ' << n - 1 << std::endl;
+        for (int i = 1; i < n; i++) {
+            ofs << 0 << ' ' << i << std::endl;
         }
     }
 
