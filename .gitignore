@@ -10,5 +10,15 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
+# Windows cmake
+Debug
+drawer.dir
+*.filters
+*.vcxproj
+*.sln
+
+# vscode
+.vscode
+
 drawer
 flags_test

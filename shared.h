@@ -7,6 +7,12 @@ class graph {
     std::vector<std::pair<double,double>> positions;
     size_t size;
 
-    graph(size_t = 0, std::vector<std::pair<int, int>> = {}, std::vector<std::pair<double,double>> = {});
+    graph();
+    graph(size_t, const std::vector<std::pair<int, int>>&, const std::vector<std::pair<double,double>>&);
     graph(const graph&);
+
+    void setMem(const std::vector<std::pair<int, int>>&);
+    void setPositions(const std::vector<std::pair<double, double>>&);
+
+
 };
