@@ -25,39 +25,33 @@ DEFINE_string(transform, "full", "Choose transformation type (allowed full, inte
 int main(int argc, char* argv[]) {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
     // check if transform was correct
-    if(!(FLAGS_transform == "full" || FLAGS_transform == "intersections" || FLAGS_transform == "springs")) {
+    if (!(FLAGS_transform == "full" || FLAGS_transform == "intersections" || FLAGS_transform == "springs")) {
         std::cerr << "Unrecognised transform option " << FLAGS_transform << ", allowed are: full, intersections, springs" << std::endl;
         return 1;
     }
-    //
     std::ifstream rstream;
-    if(user_provided("in_file")) {
+    if (user_provided("in_file")) {
         rstream.open(FLAGS_in_file, std::ifstream::in);
     }
     
     graph g = graphIO::read_graph(user_provided("in_file") ? rstream : std::cin, FLAGS_in_json, FLAGS_in_coords);
     // apply transformations
-    if(true) {
-        srand(time(NULL));
+    if (true) {
         g.positions.resize(g.size);
-        for(int i = 0; i < g.size; i++) {
-            g.positions[i] = { (double)rand() / RAND_MAX, (double)rand() / RAND_MAX }; 
-        }
+        g.setRandomPositions();
     }
-    if(FLAGS_transform == "full") {
-
+    if (FLAGS_transform == "full") {
+        //algo::applyIntersections(g);
         algo::applySprings(g, 10000);
-    }
-    else if(FLAGS_transform == "intersections") {
-
-    }
-    else if(FLAGS_transform == "springs") {
+    } else if (FLAGS_transform == "intersections") {
+        algo::applyIntersections(g);
+    } else if (FLAGS_transform == "springs") {
         algo::applySprings(g, 10000);
     }
 
     // save output
     std::ofstream wstream;
-    if(user_provided("out_file")) {
+    if (user_provided("out_file")) {
         wstream.open(FLAGS_out_file, std::ofstream::trunc | std::ofstream::out);
     }
     graphIO::write_graph(user_provided("out_file") ? wstream : std::cout, g, FLAGS_out_json);
