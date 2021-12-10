@@ -1,9 +1,6 @@
 
 
-all: randGraphGen prog
-	
-prog: prog.cpp
-	g++ prog.cpp -o prog
+all: randGraphGen
 
 randGraphGen: randGraphGen.cpp
 	g++ randGraphGen.cpp -o randGraphGen

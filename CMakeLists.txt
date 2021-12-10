@@ -16,7 +16,8 @@ if(NOT json_POPULATED)
   add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
-find_package(gflags REQUIRED)
+#find_package(gflags REQUIRED)
+add_subdirectory(submodules/gflags)
 
 target_link_libraries(drawer PRIVATE nlohmann_json::nlohmann_json gflags)
 
