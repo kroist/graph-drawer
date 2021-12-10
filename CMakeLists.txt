@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(GraphDrawer)
 
-add_executable(drawer shared.cpp graphIO.cpp main.cpp)
+add_executable(drawer shared.cpp graphIO.cpp main.cpp algo.cpp)
 
 
 include(FetchContent)

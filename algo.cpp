@@ -5,6 +5,8 @@
 #include <vector>
 #include <iomanip>
 
+#include "algo.h"
+
 const double cRep = 2;
 const double cSpring = 10;
 const double sLen = 1;
@@ -15,6 +17,8 @@ const double rate = 0.0001;
 
 struct pnt {
     double x, y;
+    pnt() {}
+    pnt(std::pair<double, double> pr): x(pr.first), y(pr.second) {}
 };
 
 double dist(pnt a, pnt b) {
@@ -36,21 +40,31 @@ double fSpring(pnt a, pnt b) {
     return cSpring * std::log(dist(a, b)/sLen);
 }
 
-pnt displacement(int v, int n, std::vector<std::vector<char> > matr, std::vector<pnt> coords) {
+pnt displacement(int v, int n, graph& g) {
     pnt res;
     res.x = res.y = 0;
+
+    /* get neigbours of v */
+    std::vector<char> is_neighbour(n, 0);
+    for (int i = 0; i < g.mem.size(); i++) {
+        if (g.mem[i].first == v)
+            is_neighbour[g.mem[i].second] = 1;
+        if (g.mem[i].second == v)
+            is_neighbour[g.mem[i].first] = 1;
+    }
+
     for (int i = 0; i < n; i++) {
         if (i == v)
             continue;
-        if (matr[v][i] == 1) {
-            double k = fSpring(coords[i], coords[v]);
-            pnt cur = vec(coords[v], coords[i]);
+        if (is_neighbour[i] == 1) {
+            double k = fSpring(pnt(g.positions[i]), pnt(g.positions[v]));
+            pnt cur = vec(pnt(g.positions[v]), pnt(g.positions[i]));
             res.x += cur.x*k;
             res.y += cur.y*k;
         }
         else {
-            double k = fRep(coords[i], coords[v]);
-            pnt cur = vec(coords[i], coords[v]);
+            double k = fRep(pnt(g.positions[i]), pnt(g.positions[v]));
+            pnt cur = vec(pnt(g.positions[i]), pnt(g.positions[v]));
             res.x += cur.x*k;
             res.y += cur.y*k;
         }
@@ -58,72 +72,18 @@ pnt displacement(int v, int n, std::vector<std::vector<char> > matr, std::vector
     return res;
 }
 
-void applySprings(std::vector<pnt>& coords, const std::vector<std::vector<char> > &matr, int iterations) {
-    int n = coords.size();
-    pnt dsp[n];
+void algo::applySprings(graph& g, int iterations) {
+
+    int n = g.size;
+    std::vector<pnt> dsp(n);
     for (int iter = 0; iter < iterations; iter++) {
         for (int i = 0; i < n; i++) {
-            dsp[i] = displacement(i, n, matr, coords);
+            dsp[i] = displacement(i, n, g);
         }
         for (int i = 0; i < n; i++) {
-            coords[i].x += rate*dsp[i].x;
-            coords[i].y += rate*dsp[i].y;
+            g.positions[i].first += rate*dsp[i].x;
+            g.positions[i].second += rate*dsp[i].y;
         }
     }
 }
 
-int main(int argc, char* argv[]) {
-    srand(time(nullptr));
-    if (argc < 2) {
-        std::cout << "Please specify filename" << std::endl;
-        return 1;
-    }
-    std::ifstream ifs(argv[1]);
-    if (ifs.fail()) {
-        std::cout << "File " << argv[1] << " does not exist" << std::endl;
-        return 1;
-    }
-
-    int n, m;
-    ifs >> n >> m;
-
-
-    std::vector<std::vector<char> > matr(n, std::vector<char>(n, 0));
-    std::vector<std::pair<int, int> > edges;
-
-    for (int i = 0; i < m; i++) {
-        int u, v;
-        ifs >> u >> v;
-        edges.push_back({u, v});
-        matr[u][v] = matr[v][u] = 1;
-    }
-    ifs.close();
-
-    std::vector<pnt> coords(n);
-
-
-    for (int i = 0; i < n; i++) {
-        coords[i].x = rand()%MAXRAND;
-        coords[i].y = rand()%MAXRAND;
-    }
-
-
-    applySprings(coords, matr, ITER);
-
-    std::string s(argv[1]);
-    s = "out" + s;
-
-    std::ofstream ofs(s);
-
-    ofs << n << std::endl;
-    for (int i = 0; i < n; i++) {
-        ofs << std::fixed << std::setprecision(5) << coords[i].x << ' ' << coords[i].y << std::endl;
-    }
-    ofs << m << std::endl;
-    for (int i = 0; i < m; i++) {
-        ofs << edges[i].first << ' ' << edges[i].second << std::endl;
-    }
-
-    ofs.close();
-
-}

@@ -5,6 +5,7 @@
 
 #include "shared.h"
 #include "graphIO.h"
+#include "algo.h"
 
 /*
 flag defines
@@ -47,6 +48,7 @@ int main(int argc, char* argv[]) {
 
     }
     else if(FLAGS_transform == "intersections") {
+        algo::applySprings(g, 10000)
 
     }
     else if(FLAGS_transform == "springs") {
