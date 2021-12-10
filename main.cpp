@@ -46,15 +46,14 @@ int main(int argc, char* argv[]) {
     }
     if(FLAGS_transform == "full") {
 
+        algo::applySprings(g, 10000);
     }
     else if(FLAGS_transform == "intersections") {
-        algo::applySprings(g, 10000);
 
     }
     else if(FLAGS_transform == "springs") {
-
+        algo::applySprings(g, 10000);
     }
-    //
 
     // save output
     std::ofstream wstream;
