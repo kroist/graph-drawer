@@ -15,6 +15,8 @@ const int MAXRAND = 1000;
 const int ITER = 10000;
 const double rate = 0.0001;
 
+const double EPS = 1e-6;
+
 struct pnt {
     double x, y;
     pnt() {}
@@ -45,13 +47,7 @@ pnt displacement(int v, int n, graph& g) {
     res.x = res.y = 0;
 
     /* get neigbours of v */
-    std::vector<char> is_neighbour(n, 0);
-    for (int i = 0; i < g.mem.size(); i++) {
-        if (g.mem[i].first == v)
-            is_neighbour[g.mem[i].second] = 1;
-        if (g.mem[i].second == v)
-            is_neighbour[g.mem[i].first] = 1;
-    }
+    auto is_neighbour = g.getNeighbours(v);
 
     for (int i = 0; i < n; i++) {
         if (i == v)
@@ -72,8 +68,22 @@ pnt displacement(int v, int n, graph& g) {
     return res;
 }
 
-void algo::applySprings(graph& g, int iterations) {
+double area(const pnt& a, const pnt& b, const pnt& c) {
+    return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+}
 
+bool intersect_1(double a, double b, double c, double d) {
+    if (a > b) std::swap(a, b);
+    if (c > d) std::swap(c, d);
+    return std::min(a, c) <= std::min(b, d);
+}
+
+bool intersect(const pnt& a, const pnt& b, const pnt& c, const pnt& d) {
+    return intersect_1(a.x, b.x, c.x, d.x) && intersect_1(a.y, b.y, c.y, d.y)
+        && area(a, b, c) * area(a, b, d) < EPS && area(c, d, a) * area(c, d, b) < EPS;
+}
+
+void algo::applySprings(graph& g, int iterations) {
     int n = g.size;
     std::vector<pnt> dsp(n);
     for (int iter = 0; iter < iterations; iter++) {
@@ -85,5 +95,77 @@ void algo::applySprings(graph& g, int iterations) {
             g.positions[i].second += rate*dsp[i].y;
         }
     }
+}
+
+int getIntersectionNumber(const graph& g) {
+    int result = 0;
+    for (int i = 0; i < g.mem.size(); i++) {
+        for (int j = i + 1; j < g.mem.size(); j++) {
+            result += intersect(pnt(g.positions[g.mem[i].first]), pnt(g.positions[g.mem[i].second]), 
+            pnt(g.positions[g.mem[j].first]), pnt(g.positions[g.mem[j].second]));
+        }
+    }
+    return result;
+}
+
+graph intersectionTransform(graph g) {
+    int n = g.size;
+    while (true) {
+        /* init new positions */
+        auto new_positions = g.positions;
+        /* flag to check if points are converged */
+        bool is_converged = true;
+        for (int v = 0; v < n; v++) {
+            /* get neigbours of v */
+            auto is_neighbour = g.getNeighbours(v);
+            int number_of_neighbours = 0;
+            /* init by zeros */
+            new_positions[v] = {0, 0};
+            for (int u = 0; u < n; u++) {
+                if (is_neighbour[u]) {
+                    new_positions[v].first += g.positions[u].first;
+                    new_positions[v].second += g.positions[u].second;
+                    number_of_neighbours++;
+                }
+            }
+            /* TODO: handle 0 */
+            if (number_of_neighbours > 0) {
+                new_positions[v].first /= (double)number_of_neighbours;
+                new_positions[v].second /= (double)number_of_neighbours;
+                if (abs(new_positions[v].first - g.positions[v].first) > EPS) {
+                    is_converged = false;
+                } else if (abs(new_positions[v].second - g.positions[v].second) > EPS) {
+                    is_converged = false;
+                }
+            }
+        }
+        /* update to new positions */
+        g.positions = new_positions;
+        /* break condition */
+        if (is_converged) {
+            break;
+        }
+    }
+    return g;
+}
+
+void algo::applyIntersections(graph& g) {
+    bool stop_flag = false;
+    int iterations = 0, answer = INF;
+    graph answer_g;
+    while (true) {
+        g.setRandomPositions();
+        graph new_g = intersectionTransform(g);
+        int result = getIntersectionNumber(new_g);
+        if (result == answer) {
+            iterations++;
+        } else if (result < answer) {
+            answer = result;
+            answer_g = new_g;
+            iterations = 0;
+        }
+        if (iterations == 50) break;
+    }
+    g = answer_g;
 }
 
