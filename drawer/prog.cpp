@@ -58,6 +58,20 @@ pnt displacement(int v, int n, std::vector<std::vector<char> > matr, std::vector
     return res;
 }
 
+void applySprings(std::vector<pnt>& coords, const std::vector<std::vector<char> > &matr, int iterations) {
+    int n = coords.size();
+    pnt dsp[n];
+    for (int iter = 0; iter < iterations; iter++) {
+        for (int i = 0; i < n; i++) {
+            dsp[i] = displacement(i, n, matr, coords);
+        }
+        for (int i = 0; i < n; i++) {
+            coords[i].x += rate*dsp[i].x;
+            coords[i].y += rate*dsp[i].y;
+        }
+    }
+}
+
 int main(int argc, char* argv[]) {
     srand(time(nullptr));
     if (argc < 2) {
@@ -94,16 +108,7 @@ int main(int argc, char* argv[]) {
     }
 
 
-    for (int iter = 0; iter < ITER; iter++) {
-        pnt dsp[n];
-        for (int i = 0; i < n; i++) {
-            dsp[i] = displacement(i, n, matr, coords);
-        }
-        for (int i = 0; i < n; i++) {
-            coords[i].x += rate*dsp[i].x;
-            coords[i].y += rate*dsp[i].y;
-        }
-    }
+    applySprings(coords, matr, ITER);
 
     std::string s(argv[1]);
     s = "out" + s;
