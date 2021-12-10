@@ -19,17 +19,16 @@ if len(sys.argv) > 2:
 f = open(filename, 'r')
 
 
-n = int(next(f))
+n, m = [int(x) for x in next(f).split()]
 
 g = nx.Graph()
 g.add_nodes_from([x for x in range(n)])
 
 pos = {}
 for i in range(n):
-    a, b = [float(x) for x in next(f).split()]
+    c, a, b = [float(x) for x in next(f).split()]
     pos[i] = [a, b]
 
-m = int(next(f))
 for i in range(m):
     a, b = [int(x) for x in next(f).split()]
     g.add_edge(a, b)

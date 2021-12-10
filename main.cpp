@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
 
     }
     else if(FLAGS_transform == "intersections") {
-        algo::applySprings(g, 10000)
+        algo::applySprings(g, 10000);
 
     }
     else if(FLAGS_transform == "springs") {
