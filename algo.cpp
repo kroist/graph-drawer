@@ -6,6 +6,7 @@
 #include <iomanip>
 
 #include "algo.h"
+#include <omp.h>
 
 const double cRep = 2;
 const double cSpring = 10;
@@ -87,9 +88,11 @@ void algo::applySprings(graph& g, int iterations) {
     int n = g.size;
     std::vector<pnt> dsp(n);
     for (int iter = 0; iter < iterations; iter++) {
+        #pragma omp parallel for
         for (int i = 0; i < n; i++) {
             dsp[i] = displacement(i, n, g);
         }
+        #pragma omp parallel for
         for (int i = 0; i < n; i++) {
             g.positions[i].first += rate*dsp[i].x;
             g.positions[i].second += rate*dsp[i].y;
