@@ -69,8 +69,8 @@ graph graphIO::read_graph(std::istream& stream, bool use_json, bool with_positio
 static void write_normal(std::ostream& stream, graph& g) {
     stream << g.size << ' ' << g.edges.size() << '\n';
     for(int i = 1; i <= g.size; i++) {
-        stream << i << ' ' << g.positions[i-1].first << ' ' << g.positions[i-1].second << '\n';
-        // stream << g.positions[i-1].first << ", " << g.positions[i-1].second << '\n';
+        // stream << i << ' ' << g.positions[i-1].first << ' ' << g.positions[i-1].second << '\n';
+        stream << g.positions[i-1].first << ", " << g.positions[i-1].second << '\n';
     }
     // for(auto p : g.edges) {
     //     stream << p.first << ' ' << p.second << '\n';

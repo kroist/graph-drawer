@@ -88,6 +88,8 @@ int main(int argc, char* argv[]) {
         algo::applySprings(g, 10000);
     }
 
+    g.scaleToUnitSquare();
+
     // save output
     std::ofstream wstream;
     if (user_provided("out_file")) {

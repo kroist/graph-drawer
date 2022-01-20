@@ -30,5 +30,7 @@ class graph {
     void setEdges(const std::vector<std::pair<int, int>>&);
     void setPositions(const std::vector<std::pair<double, double>>&);
     void setRandomPositions();
+    void scaleToUnitSquare();
     std::vector<char> getNeighbours(int v);
+
 };

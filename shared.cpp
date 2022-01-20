@@ -40,6 +40,39 @@ void graph::setRandomPositions() {
     }
 }
 
+void graph::scaleToUnitSquare() {
+    double minx, maxx, miny, maxy;
+    minx = miny = INF;
+    maxx = maxy = -INF;
+
+    for (auto point : this->positions) {
+        minx = std::min(minx, point.first);
+        miny = std::min(miny, point.second);
+        maxx = std::max(maxx, point.first);
+        maxy = std::max(maxy, point.second);
+    }
+    for (auto& point : this->positions) {
+        point.first -= minx;
+        point.second -= miny;
+    }
+
+    double deltax, deltay;
+    deltax = maxx - minx;
+    deltay = maxy - miny;
+    
+    double scale;
+    if(abs(deltax) > abs(deltay)) {
+        scale = deltax;
+    }
+    else {
+        scale = deltay;
+    }
+    for (auto& point : this->positions) {
+        point.first /= scale;
+        point.second /= scale;
+    }
+}
+
 std::vector<char> graph::getNeighbours(const int v) {
     std::vector<char> is_neighbour(this->size, 0);
     for (int i = 0; i < this->edges.size(); i++) {
