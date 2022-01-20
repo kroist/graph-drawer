@@ -69,8 +69,8 @@ graph graphIO::read_graph(std::istream& stream, bool use_json, bool with_positio
 static void write_normal(std::ostream& stream, graph& g) {
     stream << g.size << ' ' << g.edges.size() << '\n';
     for(int i = 1; i <= g.size; i++) {
-        // stream << i << ' ' << g.positions[i-1].first << ' ' << g.positions[i-1].second << '\n';
-        stream << g.positions[i-1].first << ", " << g.positions[i-1].second << '\n';
+        stream << i << ' ' << g.positions[i-1].first << ' ' << g.positions[i-1].second << '\n';
+        // stream << g.positions[i-1].first << ", " << g.positions[i-1].second << '\n';
     }
     // for(auto p : g.edges) {
     //     stream << p.first << ' ' << p.second << '\n';
@@ -78,9 +78,9 @@ static void write_normal(std::ostream& stream, graph& g) {
 }
 
 static void write_tikz(std::ostream& stream, graph& g) {
-    stream << "\\documentclass{article}\n\\usepackage[utf8]{inputenc}\n\\usepackage{tikz}\n\\begin{document}\n\\begin{tikzpicture}\n\\begin{scope}[every node/.style={circle,thick,draw}]\n";
+    stream << "\\documentclass[border=5mm]{standalone}\n\\usepackage[utf8]{inputenc}\n\\usepackage{tikz}\n\\begin{document}\n\\begin{tikzpicture}\n\\begin{scope}[every node/.style={circle,thick,draw}]\n";
     for(int i = 0; i < g.size; i++) {
-        stream << "\\node (" << i + 1 << ") at (" << 10 * g.positions[i].first << ", " << 10 * g.positions[i].second << ") {" << i + 1 << "};\n";
+        stream << "\\node (" << i + 1 << ") at (" << 20 * g.positions[i].first << ", " << 20 * g.positions[i].second << ") {" << i + 1 << "};\n";
     }
     stream << "\\end{scope}\n\n";
     stream << "\\begin{scope}[every node/.style={fill=white,circle}, every edge/.style={draw=red,very thick}]\n";
