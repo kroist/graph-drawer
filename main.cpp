@@ -25,6 +25,8 @@ DEFINE_string(transform, "full", "Choose transformation type (allowed full, inte
 
 DEFINE_string(out_type, "normal", "Set output type (allowed any combination of: normal, json, tikz)");
 
+DEFINE_int32(iterations, 10000, "Number of iterations");
+
 unsigned short handle_out_type() {
     unsigned short result = 0;
     std::vector<std::string> options;
@@ -80,12 +82,12 @@ int main(int argc, char* argv[]) {
     g.setRandomPositions();
 
     if (FLAGS_transform == "full") {
-        //algo::applyIntersections(g);
-        algo::applySprings(g, 10000);
+        //algo::applyIntersections(g, FLAGS_iterations);
+        algo::applySprings(g, FLAGS_iterations);
     } else if (FLAGS_transform == "intersections") {
-        algo::applyIntersections(g);
+        algo::applyIntersections(g, FLAGS_iterations);
     } else if (FLAGS_transform == "springs") {
-        algo::applySprings(g, 10000);
+        algo::applySprings(g, FLAGS_iterations);
     }
 
     g.scaleToUnitSquare();

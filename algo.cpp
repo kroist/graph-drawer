@@ -152,11 +152,11 @@ graph intersectionTransform(graph g) {
     return g;
 }
 
-void algo::applyIntersections(graph& g) {
+void algo::applyIntersections(graph& g, int max_iterations) {
     bool stop_flag = false;
     int iterations = 0, answer = INF;
     graph answer_g;
-    while (true) {
+    for(int it = 0; it < max_iterations; it++) {
         g.setRandomPositions();
         graph new_g = intersectionTransform(g);
         int result = getIntersectionNumber(new_g);
@@ -167,7 +167,7 @@ void algo::applyIntersections(graph& g) {
             answer_g = new_g;
             iterations = 0;
         }
-        if (iterations == 50) break;
+        if (iterations == max_iterations) break;
     }
     g = answer_g;
 }
