@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(GraphDrawer)
 
-add_executable(drawer shared.cpp graphIO.cpp main.cpp)
+add_executable(drawer shared.cpp graphIO.cpp main.cpp algo.cpp)
 
 
 include(FetchContent)
@@ -30,4 +30,11 @@ if(NOT gflags_POPULATED)
   add_subdirectory(${gflags_SOURCE_DIR} ${gflags_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
+
 target_link_libraries(drawer PRIVATE nlohmann_json::nlohmann_json gflags)
+
+find_package(OpenMP)
+
+if (OpenMP_CXX_FOUND)
+    target_link_libraries(drawer PRIVATE OpenMP::OpenMP_CXX)
+endif()

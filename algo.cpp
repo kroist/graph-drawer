@@ -5,6 +5,9 @@
 #include <vector>
 #include <iomanip>
 
+#include "algo.h"
+#include <omp.h>
+
 const double cRep = 2;
 const double cSpring = 10;
 const double sLen = 1;
@@ -13,8 +16,12 @@ const int MAXRAND = 1000;
 const int ITER = 10000;
 const double rate = 0.0001;
 
+const double EPS = 1e-6;
+
 struct pnt {
     double x, y;
+    pnt() {}
+    pnt(std::pair<double, double> pr): x(pr.first), y(pr.second) {}
 };
 
 double dist(pnt a, pnt b) {
@@ -36,21 +43,25 @@ double fSpring(pnt a, pnt b) {
     return cSpring * std::log(dist(a, b)/sLen);
 }
 
-pnt displacement(int v, int n, std::vector<std::vector<char> > matr, std::vector<pnt> coords) {
+pnt displacement(int v, int n, graph& g) {
     pnt res;
     res.x = res.y = 0;
+
+    /* get neigbours of v */
+    auto is_neighbour = g.getNeighbours(v);
+
     for (int i = 0; i < n; i++) {
         if (i == v)
             continue;
-        if (matr[v][i] == 1) {
-            double k = fSpring(coords[i], coords[v]);
-            pnt cur = vec(coords[v], coords[i]);
+        if (is_neighbour[i] == 1) {
+            double k = fSpring(pnt(g.positions[i]), pnt(g.positions[v]));
+            pnt cur = vec(pnt(g.positions[v]), pnt(g.positions[i]));
             res.x += cur.x*k;
             res.y += cur.y*k;
         }
         else {
-            double k = fRep(coords[i], coords[v]);
-            pnt cur = vec(coords[i], coords[v]);
+            double k = fRep(pnt(g.positions[i]), pnt(g.positions[v]));
+            pnt cur = vec(pnt(g.positions[i]), pnt(g.positions[v]));
             res.x += cur.x*k;
             res.y += cur.y*k;
         }
@@ -58,72 +69,106 @@ pnt displacement(int v, int n, std::vector<std::vector<char> > matr, std::vector
     return res;
 }
 
-void applySprings(std::vector<pnt>& coords, const std::vector<std::vector<char> > &matr, int iterations) {
-    int n = coords.size();
-    pnt dsp[n];
+double area(const pnt& a, const pnt& b, const pnt& c) {
+    return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+}
+
+bool intersect_1(double a, double b, double c, double d) {
+    if (a > b) std::swap(a, b);
+    if (c > d) std::swap(c, d);
+    return std::min(a, c) <= std::min(b, d);
+}
+
+bool intersect(const pnt& a, const pnt& b, const pnt& c, const pnt& d) {
+    return intersect_1(a.x, b.x, c.x, d.x) && intersect_1(a.y, b.y, c.y, d.y)
+        && area(a, b, c) * area(a, b, d) < EPS && area(c, d, a) * area(c, d, b) < EPS;
+}
+
+void algo::applySprings(graph& g, int iterations) {
+    int n = g.size;
+    std::vector<pnt> dsp(n);
     for (int iter = 0; iter < iterations; iter++) {
+        #pragma omp parallel for
         for (int i = 0; i < n; i++) {
-            dsp[i] = displacement(i, n, matr, coords);
+            dsp[i] = displacement(i, n, g);
         }
+        #pragma omp parallel for
         for (int i = 0; i < n; i++) {
-            coords[i].x += rate*dsp[i].x;
-            coords[i].y += rate*dsp[i].y;
+            g.positions[i].first += rate*dsp[i].x;
+            g.positions[i].second += rate*dsp[i].y;
         }
     }
 }
 
-int main(int argc, char* argv[]) {
-    srand(time(nullptr));
-    if (argc < 2) {
-        std::cout << "Please specify filename" << std::endl;
-        return 1;
+int getIntersectionNumber(const graph& g) {
+    int result = 0;
+    for (int i = 0; i < g.mem.size(); i++) {
+        for (int j = i + 1; j < g.mem.size(); j++) {
+            result += intersect(pnt(g.positions[g.mem[i].first]), pnt(g.positions[g.mem[i].second]), 
+            pnt(g.positions[g.mem[j].first]), pnt(g.positions[g.mem[j].second]));
+        }
     }
-    std::ifstream ifs(argv[1]);
-    if (ifs.fail()) {
-        std::cout << "File " << argv[1] << " does not exist" << std::endl;
-        return 1;
-    }
-
-    int n, m;
-    ifs >> n >> m;
-
-
-    std::vector<std::vector<char> > matr(n, std::vector<char>(n, 0));
-    std::vector<std::pair<int, int> > edges;
-
-    for (int i = 0; i < m; i++) {
-        int u, v;
-        ifs >> u >> v;
-        edges.push_back({u, v});
-        matr[u][v] = matr[v][u] = 1;
-    }
-    ifs.close();
-
-    std::vector<pnt> coords(n);
-
-
-    for (int i = 0; i < n; i++) {
-        coords[i].x = rand()%MAXRAND;
-        coords[i].y = rand()%MAXRAND;
-    }
-
-
-    applySprings(coords, matr, ITER);
-
-    std::string s(argv[1]);
-    s = "out" + s;
-
-    std::ofstream ofs(s);
-
-    ofs << n << std::endl;
-    for (int i = 0; i < n; i++) {
-        ofs << std::fixed << std::setprecision(5) << coords[i].x << ' ' << coords[i].y << std::endl;
-    }
-    ofs << m << std::endl;
-    for (int i = 0; i < m; i++) {
-        ofs << edges[i].first << ' ' << edges[i].second << std::endl;
-    }
-
-    ofs.close();
-
+    return result;
 }
+
+graph intersectionTransform(graph g) {
+    int n = g.size;
+    while (true) {
+        /* init new positions */
+        auto new_positions = g.positions;
+        /* flag to check if points are converged */
+        bool is_converged = true;
+        for (int v = 0; v < n; v++) {
+            /* get neigbours of v */
+            auto is_neighbour = g.getNeighbours(v);
+            int number_of_neighbours = 0;
+            /* init by zeros */
+            new_positions[v] = {0, 0};
+            for (int u = 0; u < n; u++) {
+                if (is_neighbour[u]) {
+                    new_positions[v].first += g.positions[u].first;
+                    new_positions[v].second += g.positions[u].second;
+                    number_of_neighbours++;
+                }
+            }
+            /* TODO: handle 0 */
+            if (number_of_neighbours > 0) {
+                new_positions[v].first /= (double)number_of_neighbours;
+                new_positions[v].second /= (double)number_of_neighbours;
+                if (abs(new_positions[v].first - g.positions[v].first) > EPS) {
+                    is_converged = false;
+                } else if (abs(new_positions[v].second - g.positions[v].second) > EPS) {
+                    is_converged = false;
+                }
+            }
+        }
+        /* update to new positions */
+        g.positions = new_positions;
+        /* break condition */
+        if (is_converged) {
+            break;
+        }
+    }
+    return g;
+}
+
+void algo::applyIntersections(graph& g) {
+    bool stop_flag = false;
+    int iterations = 0, answer = INF;
+    graph answer_g;
+    while (true) {
+        g.setRandomPositions();
+        graph new_g = intersectionTransform(g);
+        int result = getIntersectionNumber(new_g);
+        if (result == answer) {
+            iterations++;
+        } else if (result < answer) {
+            answer = result;
+            answer_g = new_g;
+            iterations = 0;
+        }
+        if (iterations == 50) break;
+    }
+    g = answer_g;
+}
+
