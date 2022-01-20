@@ -102,10 +102,10 @@ void algo::applySprings(graph& g, int iterations) {
 
 int getIntersectionNumber(const graph& g) {
     int result = 0;
-    for (int i = 0; i < g.mem.size(); i++) {
-        for (int j = i + 1; j < g.mem.size(); j++) {
-            result += intersect(pnt(g.positions[g.mem[i].first]), pnt(g.positions[g.mem[i].second]), 
-            pnt(g.positions[g.mem[j].first]), pnt(g.positions[g.mem[j].second]));
+    for (int i = 0; i < g.edges.size(); i++) {
+        for (int j = i + 1; j < g.edges.size(); j++) {
+            result += intersect(pnt(g.positions[g.edges[i].first]), pnt(g.positions[g.edges[i].second]), 
+            pnt(g.positions[g.edges[j].first]), pnt(g.positions[g.edges[j].second]));
         }
     }
     return result;

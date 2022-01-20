@@ -2,15 +2,7 @@
 
 to compile project, do
 
-    git submodule init
+    cmake -B build/ -S .
 
-    git submodule update
-    
-    mkdir build
-
-    cd build
-
-    cmake ..
-
-    make
+    cmake --build build
 

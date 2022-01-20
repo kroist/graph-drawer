@@ -42,11 +42,11 @@ void graph::setRandomPositions() {
 
 std::vector<char> graph::getNeighbours(const int v) {
     std::vector<char> is_neighbour(this->size, 0);
-    for (int i = 0; i < this->mem.size(); i++) {
-        if (this->mem[i].first == v)
-            is_neighbour[this->mem[i].second] = 1;
-        if (this->mem[i].second == v)
-            is_neighbour[this->mem[i].first] = 1;
+    for (int i = 0; i < this->edges.size(); i++) {
+        if (this->edges[i].first == v)
+            is_neighbour[this->edges[i].second] = 1;
+        if (this->edges[i].second == v)
+            is_neighbour[this->edges[i].first] = 1;
     }
     return is_neighbour;
 }
