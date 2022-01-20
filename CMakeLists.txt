@@ -34,6 +34,8 @@ endif()
 
 target_link_libraries(drawer PRIVATE nlohmann_json::nlohmann_json gflags)
 
+
+# OPENMP
 find_package(OpenMP)
 
 if (OpenMP_CXX_FOUND)
@@ -54,3 +56,18 @@ file(GLOB tests_SRC CONFIGURE_DEPENDS "test/*.cpp")
 
 add_executable(tests ${tests_SRC})
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
+
+
+# BOOST
+set(Boost_USE_STATIC_LIBS OFF) 
+set(Boost_USE_MULTITHREADED ON)  
+set(Boost_USE_STATIC_RUNTIME OFF)
+find_package(Boost 1.45.0 COMPONENTS string) 
+
+if(Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS}) 
+    target_link_libraries(drawer ${Boost_LIBRARIES})
+endif()
+
+
+
