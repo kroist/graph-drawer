@@ -16,19 +16,14 @@
 image: gcc
 
 stages:          # List of stages for jobs, and their order of execution
-  - before_script
   - build
-
-before:       # This job runs in the build stage, which runs first.
-  stage: before_script
-  script:
-    - apt-get update --yes
-    - apt-get install --yes cmake
-
 
 build:       # This job runs in the build stage, which runs first.
   stage: build
   script:
+    - echo "Getting cmake"
+    - apt-get update --yes
+    - apt-get install --yes cmake
     - echo "Compiling the code..."
     - mkdir build
     - cd build
