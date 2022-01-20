@@ -31,6 +31,7 @@ if(NOT gflags_POPULATED)
 endif()
 
 
+
 target_link_libraries(drawer PRIVATE nlohmann_json::nlohmann_json gflags)
 
 find_package(OpenMP)
@@ -38,3 +39,18 @@ find_package(OpenMP)
 if (OpenMP_CXX_FOUND)
     target_link_libraries(drawer PRIVATE OpenMP::OpenMP_CXX)
 endif()
+
+# TESTING
+FetchContent_Declare(
+  Catch2
+  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+  GIT_TAG        v3.0.0-preview3
+)
+
+FetchContent_MakeAvailable(Catch2)
+
+
+file(GLOB tests_SRC CONFIGURE_DEPENDS "test/*.cpp")
+
+add_executable(tests ${tests_SRC})
+target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
