@@ -35,6 +35,10 @@ build:       # This job runs in the build stage, which runs first.
     - make
     - echo "Compile complete."
     - mv tests ..
+  artifacts:
+    paths:
+      - tests
+
 
 cpp:
   stage: test
