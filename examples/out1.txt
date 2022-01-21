@@ -1,0 +1,38 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle,thick,draw}]
+\node (0) at (3.79913, 1.46976) {0};
+\node (1) at (10, 3.48383) {1};
+\node (2) at (4.53456, 5.53188) {2};
+\node (3) at (0.293593, 3.67417) {3};
+\node (4) at (5.43656, 3.84303) {4};
+\node (5) at (7.48111, 3.16454) {5};
+\node (6) at (7.11993, 7.53783) {6};
+\node (7) at (1.47177, 6.33496) {7};
+\node (8) at (0, 0) {8};
+\node (9) at (9.25439, 6.66285) {9};
+\end{scope}
+
+\begin{scope}[every node/.style={fill=white,circle}, every edge/.style={draw=red,very thick}]
+\draw [-] (0) -- (2);
+\draw [-] (0) -- (4);
+\draw [-] (0) -- (5);
+\draw [-] (1) -- (4);
+\draw [-] (1) -- (5);
+\draw [-] (2) -- (3);
+\draw [-] (2) -- (4);
+\draw [-] (4) -- (5);
+\draw [-] (8) -- (0);
+\draw [-] (9) -- (2);
+\draw [-] (4) -- (7);
+\draw [-] (2) -- (6);
+\draw [-] (1) -- (9);
+\draw [-] (5) -- (6);
+\draw [-] (8) -- (3);
+\draw [-] (3) -- (7);
+\end{scope}
+\end{tikzpicture}
+\end{document}

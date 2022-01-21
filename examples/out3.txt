@@ -1,0 +1,18 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle,thick,draw}]
+\node (0) at (4.83125, 10) {1};
+\node (1) at (11.0759, 0.816017) {2};
+\node (2) at (0, 0) {3};
+\end{scope}
+
+\begin{scope}[every node/.style={fill=white,circle}, every edge/.style={draw=red,very thick}]
+\draw [-] (0) -- (1);
+\draw [-] (1) -- (2);
+\draw [-] (0) -- (2);
+\end{scope}
+\end{tikzpicture}
+\end{document}

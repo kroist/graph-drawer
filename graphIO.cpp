@@ -80,7 +80,7 @@ static void write_normal(std::ostream& stream, graph& g) {
 static void write_tikz(std::ostream& stream, graph& g) {
     stream << "\\documentclass{article}\n\\usepackage[utf8]{inputenc}\n\\usepackage{tikz}\n\\begin{document}\n\\begin{tikzpicture}\n\\begin{scope}[every node/.style={circle,thick,draw}]\n";
     for(int i = 0; i < g.size; i++) {
-        stream << "\\node (" << i + 1 << ") at (" << 10 * g.positions[i].first << ", " << 10 * g.positions[i].second << ") {" << i + 1 << "};\n";
+        stream << "\\node (" << i << ") at (" << 10 * g.positions[i].first << ", " << 10 * g.positions[i].second << ") {" << i << "};\n";
     }
     stream << "\\end{scope}\n\n";
     stream << "\\begin{scope}[every node/.style={fill=white,circle}, every edge/.style={draw=red,very thick}]\n";
