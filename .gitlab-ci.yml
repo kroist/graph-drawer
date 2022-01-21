@@ -17,6 +17,7 @@ image: gcc
 
 stages:          # List of stages for jobs, and their order of execution
   - build
+  - test
 
 build:       # This job runs in the build stage, which runs first.
   stage: build
@@ -24,6 +25,7 @@ build:       # This job runs in the build stage, which runs first.
     - echo "Getting cmake"
     - apt-get update --yes
     - apt-get install --yes cmake
+    - sudo apt-get install libboost-all-dev
     - echo "Compiling the code..."
     - mkdir build
     - cd build
@@ -31,3 +33,11 @@ build:       # This job runs in the build stage, which runs first.
     - make
     - echo "Compile complete."
 
+cpp:
+  stage: test
+  script:
+    - build/./tests --reporter junit --out build/result.xml
+  artifacts:
+    when: always
+    reports:
+      junit: build/result.xml
