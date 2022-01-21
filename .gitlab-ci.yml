@@ -25,6 +25,7 @@ build:       # This job runs in the build stage, which runs first.
     - echo "Getting cmake"
     - apt-get update --yes
     - apt-get install --yes cmake
+    - apt-get install --yes build-essential
     - apt-get install --yes libboost-all-dev
     - echo "Compiling the code..."
     - mkdir build
