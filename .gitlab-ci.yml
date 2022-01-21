@@ -34,12 +34,13 @@ build:       # This job runs in the build stage, which runs first.
     - cmake ..
     - make
     - echo "Compile complete."
+    - mv tests ..
 
 cpp:
   stage: test
   script:
-    - build/./tests --reporter junit --out build/result.xml
+    - ./tests --reporter junit --out result.xml
   artifacts:
     when: always
     reports:
-      junit: build/result.xml
+      junit: result.xml
