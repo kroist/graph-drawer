@@ -88,11 +88,11 @@ void algo::applySprings(graph& g, int iterations) {
     int n = g.size;
     std::vector<pnt> dsp(n);
     for (int iter = 0; iter < iterations; iter++) {
-        #pragma omp parallel for
+        #pragma omp parallel for num_threads(8)
         for (int i = 0; i < n; i++) {
             dsp[i] = displacement(i, n, g);
         }
-        #pragma omp parallel for
+        #pragma omp parallel for num_threads(8)
         for (int i = 0; i < n; i++) {
             g.positions[i].first += rate*dsp[i].x;
             g.positions[i].second += rate*dsp[i].y;

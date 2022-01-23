@@ -1,72 +1,46 @@
 #include <gflags/gflags.h>
 #include <iostream>
 #include <vector>
-#include <boost/algorithm/string.hpp>
 #include <fstream>
 #include <cstring>
 
 #include "shared.h"
 #include "graphIO.h"
 #include "algo.h"
+#include "planar.h"
 
-/*
-flag defines
-*/
 bool user_provided(const char* flag_name) {
     return !gflags::GetCommandLineFlagInfoOrDie(flag_name).is_default;
 }
 
-DEFINE_string(in_file, "", "Name of the input file");
 DEFINE_bool(in_json, false, "Treat input as json object");
 DEFINE_bool(in_coords, false, "Assume that input contains coordinates");
+DEFINE_bool(skip_planar, false, "Skip planarity checking & drawing");
 
+DEFINE_string(in_file, "", "Name of the input file");
 DEFINE_string(out_file, "", "Name of the output file");
 DEFINE_string(transform, "full", "Choose transformation type (allowed full, intersections, springs)");
-
-DEFINE_string(out_type, "normal", "Set output type (allowed any combination of: normal, json, tikz)");
+DEFINE_string(out_type, "normal", "Set output type (allowed normal, json, tikz)");
 
 DEFINE_int32(iterations, 10000, "Number of iterations");
 
-unsigned short handle_out_type() {
-    unsigned short result = 0;
-    std::vector<std::string> options;
-    boost::algorithm::split(options, FLAGS_out_type, boost::is_any_of(","));
-    if(options.size() == 0) {
-        return 1;
-    }
-    else if(options.size() > 3) {
-        std::cerr << "Flag out_type contains too many options!" << std::endl;
-        return 0;
-    }
-    else {
-        for(std::string& opt : options) {
-            if(opt == "normal") {
-                result |= OutType::normal_t;
-            }
-            else if(opt == "json") {
-                result |= OutType::json_t;
-            }
-            else if(opt == "tikz") {
-                result |= OutType::tikz_t;
-            }
-            else {
-                std::cerr << "Option " << opt << " for flag out_type is unrecognised." << std::endl;
-                return 0;
-            }
-        }
-    }
-    return result;
-}
-
-int main(int argc, char* argv[]) {
+bool handle_flags(int argc, char* argv[]) {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
     // check if transform was correct
     if (!(FLAGS_transform == "full" || FLAGS_transform == "intersections" || FLAGS_transform == "springs")) {
         std::cerr << "Unrecognised transform option " << FLAGS_transform << ", allowed are: full, intersections, springs" << std::endl;
-        return 1;
+        return false;
     }
-    unsigned short out_type = handle_out_type();
-    if(out_type == 0) {
+    // check if return type was correct
+    if(!(FLAGS_out_type == "normal" || FLAGS_out_type == "json" || FLAGS_out_type == "tikz")) {
+        std::cerr << "Unrecognised output type option " << FLAGS_out_type << ", allowed are: normal, json, tikz" << std::endl;
+        return false;
+    }
+    return true;
+}
+
+int main(int argc, char* argv[]) {
+    if(!handle_flags(argc, argv)) {
         return 1;
     }
 
@@ -81,7 +55,10 @@ int main(int argc, char* argv[]) {
     g.positions.resize(g.size);
     g.setRandomPositions();
 
-    if (FLAGS_transform == "full") {
+    if(!FLAGS_skip_planar && maybe_draw_planar(g)) {
+
+    }
+    else if (FLAGS_transform == "full") {
         //algo::applyIntersections(g, FLAGS_iterations);
         algo::applySprings(g, FLAGS_iterations);
     } else if (FLAGS_transform == "intersections") {
@@ -97,5 +74,5 @@ int main(int argc, char* argv[]) {
     if (user_provided("out_file")) {
         wstream.open(FLAGS_out_file, std::ofstream::trunc | std::ofstream::out);
     }
-    graphIO::write_graph(user_provided("out_file") ? wstream : std::cout, g, out_type);
+    graphIO::write_graph(user_provided("out_file") ? wstream : std::cout, g, FLAGS_out_type);
 }

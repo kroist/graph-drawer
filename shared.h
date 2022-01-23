@@ -10,12 +10,6 @@ double getRand01();
 
 const int INF = 1e9 + 1337;
 
-enum OutType: unsigned short {
-    normal_t = 1,
-    json_t = 2,
-    tikz_t = 4
-};
-
 class graph {
     public:
     std::vector<std::pair<int, int>> edges;

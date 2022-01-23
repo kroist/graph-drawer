@@ -90,15 +90,15 @@ static void write_tikz(std::ostream& stream, graph& g) {
     stream << "\\end{scope}\n\\end{tikzpicture}\n\\end{document}\n";
 }
 
-void graphIO::write_graph(std::ostream& stream, graph& g, unsigned short out_type) {
-    if(out_type & OutType::normal_t) {
+void graphIO::write_graph(std::ostream& stream, graph& g, std::string out_type) {
+    if(out_type == "normal") {
         write_normal(stream, g);
     }
-    if(out_type & OutType::json_t) {
+    else if(out_type == "json") {
         json j = g;
         stream << j.dump(4) << '\n';
     }
-    if(out_type & OutType::tikz_t) {
+    else if(out_type == "tikz") {
         write_tikz(stream, g);
     }
 }

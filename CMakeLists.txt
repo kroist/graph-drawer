@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(GraphDrawer)
 set (CMAKE_CXX_STANDARD 11)
 
-add_executable(drawer shared.cpp graphIO.cpp main.cpp algo.cpp)
+add_executable(drawer shared.cpp graphIO.cpp main.cpp algo.cpp planar.cpp)
 
 
 include(FetchContent)
@@ -22,19 +22,16 @@ if(NOT json_POPULATED)
 endif()
 
 # GFLAGS
-find_package(gflags QUIET)
-if(NOT gflags_FOUND)
-  FetchContent_Declare(gflags
-    GIT_REPOSITORY https://github.com/gflags/gflags.git
-    GIT_TAG v2.2.2)
+FetchContent_Declare(gflags
+  GIT_REPOSITORY https://github.com/gflags/gflags.git
+  GIT_TAG v2.2.2)
 
-  FetchContent_GetProperties(gflags)
-  if(NOT gflags_POPULATED)
-    message(STATUS "Fetching gflags library")
-    FetchContent_Populate(gflags)
-    message(STATUS "Fetching finished")
-    add_subdirectory(${gflags_SOURCE_DIR} ${gflags_BINARY_DIR} EXCLUDE_FROM_ALL)
-  endif()
+FetchContent_GetProperties(gflags)
+if(NOT gflags_POPULATED)
+  message(STATUS "Fetching gflags library")
+  FetchContent_Populate(gflags)
+  message(STATUS "Fetching finished")
+  add_subdirectory(${gflags_SOURCE_DIR} ${gflags_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
 
@@ -63,14 +60,21 @@ file(GLOB tests_SRC CONFIGURE_DEPENDS "test/*.cpp")
 add_executable(tests ${tests_SRC})
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 
+# LEMON
+include(ExternalProject)
+ExternalProject_Add(
+        lemon
+        PREFIX     external
+        URL        http://lemon.cs.elte.hu/pub/sources/lemon-1.3.1.tar.gz
+        URL_HASH   MD5=e89f887559113b68657eca67cf3329b5
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=lemon
+        UPDATE_DISCONNECTED ${OFFLINE}
+)
 
-# BOOST
-set(Boost_USE_STATIC_LIBS OFF) 
-set(Boost_USE_MULTITHREADED ON)  
-set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost REQUIRED) 
+set(LIBLEMON_ROOT ${CMAKE_CURRENT_BINARY_DIR}/external/src/lemon-build/lemon/)
 
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS}) 
-    target_link_libraries(drawer ${Boost_LIBRARIES})
-endif()
+include_directories(
+  "${LIBLEMON_ROOT}/include"
+)
+link_directories( "${LIBLEMON_ROOT}/lib")
+add_dependencies(drawer lemon)
