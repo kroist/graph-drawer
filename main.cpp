@@ -53,7 +53,9 @@ int main(int argc, char* argv[]) {
     
     // apply transformations
     g.positions.resize(g.size);
-    g.setRandomPositions();
+    if (!FLAGS_in_coords) {
+        g.setRandomPositions();
+    }
 
     if(!FLAGS_skip_planar && maybe_draw_planar(g)) {
 
