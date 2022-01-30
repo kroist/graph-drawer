@@ -85,7 +85,7 @@ TEST_CASE("graph io test", "[graph-io]") {
         REQUIRE(g.edges[1].second == 2);
     }
     SECTION("read_normal with positions", "") {
-        std::istringstream str("3 2\n1 0 0\n2 0 1\n3 0 2\n0 1\n1 2\n");
+        std::istringstream str("3 2\n0 0 0\n1 0 1\n2 0 2\n0 1\n1 2\n");
         graph g = graphIO::read_graph(str, false, true);
         REQUIRE(g.size == 3);
         REQUIRE(g.positions.size() == 3);
@@ -102,7 +102,7 @@ TEST_CASE("graph io test", "[graph-io]") {
         REQUIRE(g.edges[1].second == 2);
     }
     SECTION("read_normal with positions", "") {
-        std::istringstream str("3 2\n1 0 0\n2 0 1\n3 0 2\n0 1\n1 2\n");
+        std::istringstream str("3 2\n0 0 0\n1 0 1\n2 0 2\n0 1\n1 2\n");
         graph g = graphIO::read_graph(str, false, true);
         REQUIRE(g.size == 3);
         REQUIRE(g.positions.size() == 3);
@@ -132,7 +132,7 @@ TEST_CASE("graph io test", "[graph-io]") {
         REQUIRE(g.edges[1].first == 1);
         REQUIRE(g.edges[1].second == 2);
     }
-    SECTION("read_normal with positions", "") {
+    SECTION("read_json with positions", "") {
         std::istringstream str(
             "{\"edges\": [[0, 1], [1, 2]],"
             "\"size\": 3,"
