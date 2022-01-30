@@ -33,7 +33,7 @@ static graph read_normal(std::istream& stream) {
     stream >> size >> m;
     std::vector<std::pair<double,double>> positions;
     if(load_positions) {
-        positions.reserve(size);
+        positions.resize(size);
         for(size_t i = 0; i < size; i++) {
             int node; // node number
             stream >> node;
