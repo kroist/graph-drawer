@@ -1,5 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include "../shared.h"
+#include "../graphIO.h"
+#include <sstream>
 
 TEST_CASE("graph class test", "[graph]") {
     SECTION("empty-graph", "") {
@@ -67,5 +69,88 @@ TEST_CASE("graph class test", "[graph]") {
         REQUIRE(vec[0] == 0);
         REQUIRE(vec[1] == 1);
         REQUIRE(vec[2] == 0);
+    }
+}
+
+TEST_CASE("graph io test", "[graph-io]") {
+    SECTION("read_normal without positions", "") {
+        std::istringstream str("3 2\n0 1\n1 2\n");
+        graph g = graphIO::read_graph(str, false, false);
+        REQUIRE(g.size == 3);
+        REQUIRE(g.positions.size() == 0);
+        REQUIRE(g.edges.size() == 2);
+        REQUIRE(g.edges[0].first == 0);
+        REQUIRE(g.edges[0].second == 1);
+        REQUIRE(g.edges[1].first == 1);
+        REQUIRE(g.edges[1].second == 2);
+    }
+    SECTION("read_normal with positions", "") {
+        std::istringstream str("3 2\n1 0 0\n2 0 1\n3 0 2\n0 1\n1 2\n");
+        graph g = graphIO::read_graph(str, false, true);
+        REQUIRE(g.size == 3);
+        REQUIRE(g.positions.size() == 3);
+        REQUIRE(g.positions[0].first == 0);
+        REQUIRE(g.positions[0].second == 0);
+        REQUIRE(g.positions[1].first == 0);
+        REQUIRE(g.positions[1].second == 1);
+        REQUIRE(g.positions[2].first == 0);
+        REQUIRE(g.positions[2].second == 2);
+        REQUIRE(g.edges.size() == 2);
+        REQUIRE(g.edges[0].first == 0);
+        REQUIRE(g.edges[0].second == 1);
+        REQUIRE(g.edges[1].first == 1);
+        REQUIRE(g.edges[1].second == 2);
+    }
+    SECTION("read_normal with positions", "") {
+        std::istringstream str("3 2\n1 0 0\n2 0 1\n3 0 2\n0 1\n1 2\n");
+        graph g = graphIO::read_graph(str, false, true);
+        REQUIRE(g.size == 3);
+        REQUIRE(g.positions.size() == 3);
+        REQUIRE(g.positions[0].first == 0);
+        REQUIRE(g.positions[0].second == 0);
+        REQUIRE(g.positions[1].first == 0);
+        REQUIRE(g.positions[1].second == 1);
+        REQUIRE(g.positions[2].first == 0);
+        REQUIRE(g.positions[2].second == 2);
+        REQUIRE(g.edges.size() == 2);
+        REQUIRE(g.edges[0].first == 0);
+        REQUIRE(g.edges[0].second == 1);
+        REQUIRE(g.edges[1].first == 1);
+        REQUIRE(g.edges[1].second == 2);
+    }
+    SECTION("read_json without positions", "") {
+        std::istringstream str(
+            "{\"edges\": [[0, 1], [1, 2]],"
+            "\"size\": 3}" 
+        );
+        graph g = graphIO::read_graph(str, true, false);
+        REQUIRE(g.size == 3);
+        REQUIRE(g.positions.size() == 0);
+        REQUIRE(g.edges.size() == 2);
+        REQUIRE(g.edges[0].first == 0);
+        REQUIRE(g.edges[0].second == 1);
+        REQUIRE(g.edges[1].first == 1);
+        REQUIRE(g.edges[1].second == 2);
+    }
+    SECTION("read_normal with positions", "") {
+        std::istringstream str(
+            "{\"edges\": [[0, 1], [1, 2]],"
+            "\"size\": 3,"
+            "\"positions\": [[0, 0], [0, 1], [0, 2]]}" 
+        );
+        graph g = graphIO::read_graph(str, true, true);
+        REQUIRE(g.size == 3);
+        REQUIRE(g.positions.size() == 3);
+        REQUIRE(g.positions[0].first == 0);
+        REQUIRE(g.positions[0].second == 0);
+        REQUIRE(g.positions[1].first == 0);
+        REQUIRE(g.positions[1].second == 1);
+        REQUIRE(g.positions[2].first == 0);
+        REQUIRE(g.positions[2].second == 2);
+        REQUIRE(g.edges.size() == 2);
+        REQUIRE(g.edges[0].first == 0);
+        REQUIRE(g.edges[0].second == 1);
+        REQUIRE(g.edges[1].first == 1);
+        REQUIRE(g.edges[1].second == 2);
     }
 }
