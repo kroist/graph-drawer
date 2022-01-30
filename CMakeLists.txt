@@ -57,7 +57,9 @@ message(STATUS "Fetching finished")
 
 file(GLOB tests_SRC CONFIGURE_DEPENDS "test/*.cpp")
 
-add_executable(tests ${tests_SRC})
+set(TEST_FILES shared.h shared.cpp)
+
+add_executable(tests ${tests_SRC} ${TEST_FILES})
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 
 # LEMON
