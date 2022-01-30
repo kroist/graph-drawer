@@ -49,8 +49,14 @@ int main(int argc, char* argv[]) {
         rstream.open(FLAGS_in_file, std::ifstream::in);
     }
     
-    graph g = graphIO::read_graph(user_provided("in_file") ? rstream : std::cin, FLAGS_in_json, FLAGS_in_coords);
-    
+    graph g;
+    try {
+        g = graphIO::read_graph(user_provided("in_file") ? rstream : std::cin, FLAGS_in_json, FLAGS_in_coords);
+    }
+    catch(...) {
+        std::cerr << "Failed reading input, expected " << (FLAGS_in_json ? "json" : "normal") << " type with" << (FLAGS_in_coords ? "" : "out") << " coordinates" << std::endl;
+        return 1;
+    }
     // apply transformations
     g.positions.resize(g.size);
     if (!FLAGS_in_coords) {

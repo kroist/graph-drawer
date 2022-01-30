@@ -35,11 +35,14 @@ static graph read_normal(std::istream& stream) {
     if(load_positions) {
         positions.resize(size);
         for(size_t i = 0; i < size; i++) {
+            if(stream.peek() == EOF) {
+                throw std::runtime_error("input reading error");
+            }
             int node; // node number
             stream >> node;
             double x, y;
             stream >> x >> y;
-            positions[node-1] = {x, y};
+            positions[node] = {x, y};
         }
     }
 
@@ -47,6 +50,9 @@ static graph read_normal(std::istream& stream) {
     edges.reserve(m);
 
     for(size_t i = 0; i < m; i++) {
+        if(stream.peek() == EOF) {
+            throw std::runtime_error("input reading error");
+        }
         int l, r;
         stream >> l >> r;
         edges.push_back({ l, r });
