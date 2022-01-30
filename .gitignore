@@ -10,6 +10,8 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 build
+submodules
+.cache
 
 # Windows cmake
 Debug
@@ -20,3 +22,6 @@ drawer.dir
 
 # vscode
 .vscode
+
+#visualisation
+visualisation
