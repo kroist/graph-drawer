@@ -10,12 +10,12 @@
 
 using namespace lemon;
 
+// g is assumed to be simple
 bool maybe_draw_planar(graph& g) {
     if(g.size < 3) {
         return true;
     }
-
-    // g is assumed to be simple
+    
     typedef ListGraph::Node Node;
 
     ListGraph lgraph;
@@ -24,14 +24,16 @@ bool maybe_draw_planar(graph& g) {
         nodes.push_back(lgraph.addNode());
     }
     for(auto edge : g.edges) {
-        lgraph.addEdge(nodes[edge.first-1], nodes[edge.second-1]);
+        lgraph.addEdge(nodes[edge.first], nodes[edge.second]);
     }
     
-    lemon::PlanarEmbedding<ListGraph> embedding(lgraph);
+    PlanarEmbedding<ListGraph> embedding(lgraph);
     
-    embedding.run(false);
-
-    lemon::PlanarDrawing<ListGraph> drawing(lgraph);
+    if(!embedding.run(false)) {
+        return false;
+    }
+    
+    PlanarDrawing<ListGraph> drawing(lgraph);
     drawing.run(embedding.embeddingMap());
     
     for(int i = 0; i < g.size; i++) {
