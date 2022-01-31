@@ -7,7 +7,6 @@
 #include "shared.h"
 #include "graphIO.h"
 #include "algo.h"
-#include "planar.h"
 
 bool user_provided(const char* flag_name) {
     return !gflags::GetCommandLineFlagInfoOrDie(flag_name).is_default;
@@ -20,7 +19,7 @@ DEFINE_bool(skip_planar, false, "Skip planarity checking & drawing");
 DEFINE_string(in_file, "", "Name of the input file");
 DEFINE_string(out_file, "", "Name of the output file");
 DEFINE_string(transform, "full", "Choose transformation type (allowed full, intersections, springs)");
-DEFINE_string(out_type, "normal", "Set output type (allowed normal, json, tikz)");
+DEFINE_string(out_type, "normal", "Set the output type (allowed normal, json, tikz)");
 
 DEFINE_int32(iterations, 10000, "Number of iterations");
 
@@ -33,6 +32,7 @@ bool handle_flags(int argc, char* argv[]) {
     }
     // check if return type was correct
     if(!(FLAGS_out_type == "normal" || FLAGS_out_type == "json" || FLAGS_out_type == "tikz")) {
+        // gflags::SetUsageMessage()
         std::cerr << "Unrecognised output type option " << FLAGS_out_type << ", allowed are: normal, json, tikz" << std::endl;
         return false;
     }
@@ -63,17 +63,19 @@ int main(int argc, char* argv[]) {
         g.setRandomPositions();
     }
 
-    if(!FLAGS_skip_planar && maybe_draw_planar(g)) {
-
+    bool planar = !FLAGS_skip_planar && algo::drawPlanar(g);
+    
+    if(!planar) {
+        if (FLAGS_transform == "full") {
+            //algo::applyIntersections(g, FLAGS_iterations);
+            algo::applySprings(g, FLAGS_iterations);
+        } else if (FLAGS_transform == "intersections") {
+            algo::applyIntersections(g, FLAGS_iterations);
+        } else if (FLAGS_transform == "springs") {
+            algo::applySprings(g, FLAGS_iterations);
+        }
     }
-    else if (FLAGS_transform == "full") {
-        //algo::applyIntersections(g, FLAGS_iterations);
-        algo::applySprings(g, FLAGS_iterations);
-    } else if (FLAGS_transform == "intersections") {
-        algo::applyIntersections(g, FLAGS_iterations);
-    } else if (FLAGS_transform == "springs") {
-        algo::applySprings(g, FLAGS_iterations);
-    }
+    
 
     g.scaleToUnitSquare();
 

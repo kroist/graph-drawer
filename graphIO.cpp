@@ -76,11 +76,7 @@ static void write_normal(std::ostream& stream, graph& g) {
     stream << g.size << ' ' << g.edges.size() << '\n';
     for(int i = 0; i < g.size; i++) {
         stream << i << ' ' << g.positions[i].first << ' ' << g.positions[i].second << '\n';
-        // stream << g.positions[i-1].first << ", " << g.positions[i-1].second << '\n';
     }
-    // for(auto p : g.edges) {
-    //     stream << p.first << ' ' << p.second << '\n';
-    // }
 }
 
 static void write_tikz(std::ostream& stream, graph& g) {

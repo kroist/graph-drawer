@@ -1,4 +1,4 @@
-#include "shared.h"
+#include "algo.h"
 #include <lemon/planarity.h>
 
 #include <lemon/math.h>
@@ -10,10 +10,9 @@
 
 using namespace lemon;
 
-// g is assumed to be simple
-bool maybe_draw_planar(graph& g) {
+bool algo::drawPlanar(graph& g) {
     if(g.size < 3) {
-        return true;
+        return false;
     }
     
     typedef ListGraph::Node Node;
