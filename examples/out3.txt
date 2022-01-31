@@ -4,15 +4,35 @@
 \begin{document}
 \begin{tikzpicture}
 \begin{scope}[every node/.style={circle,thick,draw}]
-\node (0) at (4.83125, 10) {1};
-\node (1) at (11.0759, 0.816017) {2};
-\node (2) at (0, 0) {3};
+\node (0) at (4.67647, 5.94892) {0};
+\node (1) at (2.18311, 2.07094) {1};
+\node (2) at (3.64694, 3.68968) {2};
+\node (3) at (4.91331, 8.08722) {3};
+\node (4) at (1.85254, 6.21342) {4};
+\node (5) at (0.735919, 4.29529) {5};
+\node (6) at (0, 1.42612) {6};
+\node (7) at (2.11857, 10) {7};
+\node (8) at (7.92889, 8.06168) {8};
+\node (9) at (4.59948, 0) {9};
 \end{scope}
 
 \begin{scope}[every node/.style={fill=white,circle}, every edge/.style={draw=red,very thick}]
-\draw [-] (0) -- (1);
-\draw [-] (1) -- (2);
 \draw [-] (0) -- (2);
+\draw [-] (0) -- (4);
+\draw [-] (0) -- (5);
+\draw [-] (1) -- (4);
+\draw [-] (1) -- (5);
+\draw [-] (2) -- (3);
+\draw [-] (2) -- (4);
+\draw [-] (4) -- (5);
+\draw [-] (8) -- (0);
+\draw [-] (9) -- (2);
+\draw [-] (4) -- (7);
+\draw [-] (2) -- (6);
+\draw [-] (1) -- (9);
+\draw [-] (5) -- (6);
+\draw [-] (8) -- (3);
+\draw [-] (3) -- (7);
 \end{scope}
 \end{tikzpicture}
 \end{document}

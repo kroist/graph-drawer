@@ -37,7 +37,7 @@ pnt vec(pnt a, pnt b) {
 }
 
 double fRep(pnt a, pnt b) {
-    return cRep / (dist(a, b)*dist(a, b));
+    return cRep / (dist(a, b));
 }
 
 double fSpring(pnt a, pnt b) {
@@ -83,7 +83,8 @@ bool infit(pnt a, pnt b, pnt p){
 
 double edgeRep(pnt a, pnt b) {
     return std::log(100 / (dist(a, b) * dist(a, b) + 1));
-    return std::min(10.0, std::exp(1 / (dist(a, b)*dist(a, b))));
+
+    //return std::min(10.0, std::exp(1 / (dist(a, b)*dist(a, b))));
 }
 
 pnt edge_displacement(int v, int n, graph& g){
@@ -96,7 +97,7 @@ pnt edge_displacement(int v, int n, graph& g){
         if (edge.first == v || edge.second == v)continue;
         pnt proj = get_projection(g.positions[edge.first], g.positions[edge.second], g.positions[v]);
         if (!infit(g.positions[edge.first], g.positions[edge.second], proj))continue;
-        double k = edgeRep(proj, pnt(g.positions[v]));
+        double k = fRep(proj, pnt(g.positions[v]));
         pnt cur = vec(proj, pnt(g.positions[v]));
         res.x += cur.x*k;
         res.y += cur.y*k;
@@ -134,8 +135,8 @@ void algo::applySprings(graph& g, int iterations) {
             g.positions[i].first += rate*dsp[i].x;
             g.positions[i].second += rate*dsp[i].y;
 
-            g.positions[i].first += rate / (int)g.edges.size() * edge_dsp[i].x;
-            g.positions[i].second += rate / (int)g.edges.size() * edge_dsp[i].y;
+            g.positions[i].first += rate * edge_dsp[i].x;
+            g.positions[i].second += rate * edge_dsp[i].y;
         }
     }
 }

@@ -4,16 +4,16 @@
 \begin{document}
 \begin{tikzpicture}
 \begin{scope}[every node/.style={circle,thick,draw}]
-\node (0) at (3.79913, 1.46976) {0};
-\node (1) at (10, 3.48383) {1};
-\node (2) at (4.53456, 5.53188) {2};
-\node (3) at (0.293593, 3.67417) {3};
-\node (4) at (5.43656, 3.84303) {4};
-\node (5) at (7.48111, 3.16454) {5};
-\node (6) at (7.11993, 7.53783) {6};
-\node (7) at (1.47177, 6.33496) {7};
-\node (8) at (0, 0) {8};
-\node (9) at (9.25439, 6.66285) {9};
+\node (0) at (3.1504, 4.61402) {0};
+\node (1) at (9.78617, 6.39447) {1};
+\node (2) at (4.88413, 6.41824) {2};
+\node (3) at (3.34167, 2.0075) {3};
+\node (4) at (6.94597, 3.86768) {4};
+\node (5) at (6.35128, 7.13572) {5};
+\node (6) at (4.16213, 10) {6};
+\node (7) at (6.28435, 0) {7};
+\node (8) at (0, 2.23001) {8};
+\node (9) at (8.5742, 9.20436) {9};
 \end{scope}
 
 \begin{scope}[every node/.style={fill=white,circle}, every edge/.style={draw=red,very thick}]
