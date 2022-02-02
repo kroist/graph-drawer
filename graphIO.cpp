@@ -5,10 +5,10 @@ using json = nlohmann::json;
 
 // conversion from graph to json
 void to_json(json& j, const graph& p) {
-    if(p.positions.size())
-        j = json{{"size", p.size}, {"edges", p.edges}, {"positions", p.positions}};
+    if (p.positions.size())
+        j = json{ {"size", p.size}, {"edges", p.edges}, {"positions", p.positions} };
     else {
-        j = json{{"size", p.size}, {"edges", p.edges}};
+        j = json{ {"size", p.size}, {"edges", p.edges} };
     }
 }
 
@@ -17,7 +17,7 @@ bool load_positions = false;
 void from_json(const json& j, graph& p) {
     j.at("size").get_to(p.size);
     j.at("edges").get_to(p.edges);
-    if(load_positions) {
+    if (load_positions) {
         j.at("positions").get_to(p.positions);
     }
 }
@@ -31,26 +31,26 @@ static graph read_json(std::istream& stream) {
 static graph read_normal(std::istream& stream) {
     size_t size, m;
     stream >> size >> m;
-    std::vector<std::pair<double,double>> positions;
-    if(load_positions) {
+    std::vector<std::pair<double, double>> positions;
+    if (load_positions) {
         positions.resize(size);
-        for(size_t i = 0; i < size; i++) {
-            if(stream.peek() == EOF) {
+        for (size_t i = 0; i < size; i++) {
+            if (stream.peek() == EOF) {
                 throw std::runtime_error("input reading error");
             }
             int node; // node number
             stream >> node;
             double x, y;
             stream >> x >> y;
-            positions[node] = {x, y};
+            positions[node] = { x, y };
         }
     }
 
-    std::vector<std::pair<int,int>> edges;
+    std::vector<std::pair<int, int>> edges;
     edges.reserve(m);
 
-    for(size_t i = 0; i < m; i++) {
-        if(stream.peek() == EOF) {
+    for (size_t i = 0; i < m; i++) {
+        if (stream.peek() == EOF) {
             throw std::runtime_error("input reading error");
         }
         int l, r;
@@ -99,7 +99,7 @@ void graphIO::write_graph(std::ostream& stream, graph& g, std::string out_type) 
         json j = g;
         stream << j.dump(4) << '\n';
     }
-    else if(out_type == "tikz") {
+    else if (out_type == "tikz") {
         write_tikz(stream, g);
     }
 }
