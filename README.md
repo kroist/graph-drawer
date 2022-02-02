@@ -26,7 +26,7 @@ build/./drawer --in_file examples/0.json --in_json --transform full --skip_plana
 build/./drawer --in_file examples/Goldner_Harary --out_type tikz
 ```
 ## Graph formats
-Graphs on input are assumed to be undirected and simple.
+Graphs on input are assumed to be connected, undirected and simple.
 ### Input
 * JSON object \
 Positions array is optional. Nodes in edges array should be values from *0* to *n-1*.
