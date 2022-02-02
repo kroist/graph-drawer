@@ -101,23 +101,6 @@ TEST_CASE("graph io test", "[graph-io]") {
         REQUIRE(g.edges[1].first == 1);
         REQUIRE(g.edges[1].second == 2);
     }
-    SECTION("read_normal with positions", "") {
-        std::istringstream str("3 2\n0 0 0\n1 0 1\n2 0 2\n0 1\n1 2\n");
-        graph g = graphIO::read_graph(str, false, true);
-        REQUIRE(g.size == 3);
-        REQUIRE(g.positions.size() == 3);
-        REQUIRE(g.positions[0].first == 0);
-        REQUIRE(g.positions[0].second == 0);
-        REQUIRE(g.positions[1].first == 0);
-        REQUIRE(g.positions[1].second == 1);
-        REQUIRE(g.positions[2].first == 0);
-        REQUIRE(g.positions[2].second == 2);
-        REQUIRE(g.edges.size() == 2);
-        REQUIRE(g.edges[0].first == 0);
-        REQUIRE(g.edges[0].second == 1);
-        REQUIRE(g.edges[1].first == 1);
-        REQUIRE(g.edges[1].second == 2);
-    }
     SECTION("read_json without positions", "") {
         std::istringstream str(
             "{\"edges\": [[0, 1], [1, 2]],"
@@ -152,5 +135,72 @@ TEST_CASE("graph io test", "[graph-io]") {
         REQUIRE(g.edges[0].second == 1);
         REQUIRE(g.edges[1].first == 1);
         REQUIRE(g.edges[1].second == 2);
+    }
+    SECTION("write_normal", "") {
+        std::istringstream str1("3 2\n0 0 0\n1 0 1\n2 0 2\n0 1\n1 2\n");
+        graph g = graphIO::read_graph(str1, false, true);
+        std::ostringstream str2("");
+        graphIO::write_graph(str2, g, "normal");
+        REQUIRE("3 2\n0 0 0\n1 0 1\n2 0 2\n" == str2.str());
+    }
+    SECTION("write_json", "") {
+        std::istringstream str1("3 2\n0 0 0\n1 0 1\n2 0 2\n0 1\n1 2\n");
+        graph g = graphIO::read_graph(str1, false, true);
+        std::ostringstream str2("");
+        graphIO::write_graph(str2, g, "json");
+        const char* res = R"({
+    "edges": [
+        [
+            0,
+            1
+        ],
+        [
+            1,
+            2
+        ]
+    ],
+    "positions": [
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            1.0
+        ],
+        [
+            0.0,
+            2.0
+        ]
+    ],
+    "size": 3
+}
+)";
+        REQUIRE(res == str2.str());
+    }
+    SECTION("write_tikz", "") {
+        std::istringstream str1("3 2\n0 0 0\n1 0 1\n2 0 2\n0 1\n1 2\n");
+        graph g = graphIO::read_graph(str1, false, true);
+        std::ostringstream str2("");
+        graphIO::write_graph(str2, g, "tikz");
+        const char* res = R"(\documentclass[border=5mm]{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle,thick,draw}]
+\node (0) at (0, 0) {0};
+\node (1) at (0, 20) {1};
+\node (2) at (0, 40) {2};
+\end{scope}
+
+\begin{scope}[every node/.style={fill=white,circle}, every edge/.style={draw=red,very thick}]
+\draw [-] (0) -- (1);
+\draw [-] (1) -- (2);
+\end{scope}
+\end{tikzpicture}
+\end{document}
+)";
+        REQUIRE(res == str2.str());
     }
 }

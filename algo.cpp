@@ -8,16 +8,6 @@
 #include "algo.h"
 #include <omp.h>
 
-const double cRep = 2;
-const double cSpring = 10;
-const double sLen = 1;
-
-const int MAXRAND = 1000;
-const int ITER = 10000;
-const double rate = 0.0001;
-
-const double EPS = 1e-6;
-
 struct pnt {
     double x, y;
     pnt() {}
@@ -117,11 +107,13 @@ void algo::applySprings(graph& g, int iterations) {
     std::vector<pnt> dsp(n);
     std::vector<pnt> edge_dsp(n);
     for (int iter = 0; iter < iterations; iter++) {
+
         #pragma omp parallel for num_threads(8)
         for (int i = 0; i < n; i++) {
             dsp[i] = displacement(i, n, g);
             edge_dsp[i] = edge_displacement(i, n, g);
         }
+
         #pragma omp parallel for num_threads(8)
         for (int i = 0; i < n; i++) {
             g.positions[i].first += rate*dsp[i].x;
@@ -135,6 +127,8 @@ void algo::applySprings(graph& g, int iterations) {
 
 int getIntersectionNumber(const graph& g) {
     int result = 0;
+
+    #pragma omp parallel for num_threads(8)
     for (int i = 0; i < g.edges.size(); i++) {
         for (int j = i + 1; j < g.edges.size(); j++) {
             result += intersect(pnt(g.positions[g.edges[i].first]), pnt(g.positions[g.edges[i].second]), 
@@ -151,6 +145,8 @@ graph intersectionTransform(graph g) {
         auto new_positions = g.positions;
         /* flag to check if points are converged */
         bool is_converged = true;
+
+        #pragma omp parallel for num_threads(8)
         for (int v = 0; v < n; v++) {
             /* get neigbours of v */
             auto is_neighbour = g.getNeighbours(v);
@@ -164,7 +160,6 @@ graph intersectionTransform(graph g) {
                     number_of_neighbours++;
                 }
             }
-            /* TODO: handle 0 */
             if (number_of_neighbours > 0) {
                 new_positions[v].first /= (double)number_of_neighbours;
                 new_positions[v].second /= (double)number_of_neighbours;
@@ -186,7 +181,6 @@ graph intersectionTransform(graph g) {
 }
 
 void algo::applyIntersections(graph& g, int max_iterations) {
-    bool stop_flag = false;
     int iterations = 0, answer = INF;
     graph answer_g;
     for(int it = 0; it < max_iterations; it++) {

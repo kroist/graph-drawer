@@ -1,10 +1,8 @@
 #include "algo.h"
 #include <lemon/planarity.h>
-
 #include <lemon/math.h>
-
-#include<lemon/graph_to_eps.h>
-#include<lemon/list_graph.h>
+#include <lemon/graph_to_eps.h>
+#include <lemon/list_graph.h>
 
 #include <vector>
 
