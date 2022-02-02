@@ -1,10 +1,14 @@
+# Maintainer: Andrii Orap andrii.orap@student.uj.edu.pl
+# Maintainer: Maksym Zub maksym.zub@gmail.com
+# Maintainer: Nazarii Denha nazarii.denha@student.uj.edu.pl
+# Maintainer: Tomasz Marzec tomasz4.marzec@student.uj.edu.pl
 pkgname=graph-drawer
 pkgver=1.0
 pkgrel=1
 epoch=
-pkgdesc=""
+pkgdesc="Generate coordinates for graph visualisation"
 arch=("x86_64")
-url=""
+url="https://gitlab.com/ia-projekt-zespolowy-2021-2022/graph-drawer"
 license=('MIT')
 groups=()
 depends=('cmake')
