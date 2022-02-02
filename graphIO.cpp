@@ -61,10 +61,9 @@ static graph read_normal(std::istream& stream) {
 }
 
 graph graphIO::read_graph(std::istream& stream, bool use_json, bool with_positions) {
-    // set global var for from_json() conversion function
     load_positions = with_positions;
 
-    if(use_json) {
+    if (use_json) {
         return read_json(stream);
     }
     else {
@@ -74,14 +73,14 @@ graph graphIO::read_graph(std::istream& stream, bool use_json, bool with_positio
 
 static void write_normal(std::ostream& stream, graph& g) {
     stream << g.size << ' ' << g.edges.size() << '\n';
-    for(int i = 0; i < g.size; i++) {
+    for (int i = 0; i < g.size; i++) {
         stream << i << ' ' << g.positions[i].first << ' ' << g.positions[i].second << '\n';
     }
 }
 
 static void write_tikz(std::ostream& stream, graph& g) {
     stream << "\\documentclass[border=5mm]{standalone}\n\\usepackage[utf8]{inputenc}\n\\usepackage{tikz}\n\\begin{document}\n\\begin{tikzpicture}\n\\begin{scope}[every node/.style={circle,thick,draw}]\n";
-    for(int i = 0; i < g.size; i++) {
+    for (int i = 0; i < g.size; i++) {
         stream << "\\node (" << i << ") at (" << 20 * g.positions[i].first << ", " << 20 * g.positions[i].second << ") {" << i << "};\n";
     }
     stream << "\\end{scope}\n\n";
@@ -93,10 +92,10 @@ static void write_tikz(std::ostream& stream, graph& g) {
 }
 
 void graphIO::write_graph(std::ostream& stream, graph& g, std::string out_type) {
-    if(out_type == "normal") {
+    if (out_type == "normal") {
         write_normal(stream, g);
     }
-    else if(out_type == "json") {
+    else if (out_type == "json") {
         json j = g;
         stream << j.dump(4) << '\n';
     }

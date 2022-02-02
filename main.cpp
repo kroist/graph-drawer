@@ -32,7 +32,6 @@ bool handle_flags(int argc, char* argv[]) {
     }
     // check if return type was correct
     if(!(FLAGS_out_type == "normal" || FLAGS_out_type == "json" || FLAGS_out_type == "tikz")) {
-        // gflags::SetUsageMessage()
         std::cerr << "Unrecognised output type option " << FLAGS_out_type << ", allowed are: normal, json, tikz" << std::endl;
         return false;
     }
