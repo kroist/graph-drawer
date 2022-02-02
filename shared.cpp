@@ -14,7 +14,7 @@ graph::graph() {
     size = 0;
 }
 
-graph::graph(size_t size, const std::vector<std::pair<int, int>>& edges, const std::vector<std::pair<double,double>>& positions) {
+graph::graph(size_t size, const std::vector<std::pair<int, int>>& edges, const std::vector<std::pair<double, double>>& positions) {
     this->edges = edges;
     this->size = size;
     this->positions = positions;
@@ -35,8 +35,8 @@ void graph::setPositions(const std::vector<std::pair<double, double>>& positions
 }
 
 void graph::setRandomPositions() {
-    for(int i = 0; i < this->size; i++) {
-        this->positions[i] = { getRand01(), getRand01() }; 
+    for (int i = 0; i < this->size; i++) {
+        this->positions[i] = { getRand01(), getRand01() };
     }
 }
 
@@ -59,9 +59,9 @@ void graph::scaleToUnitSquare() {
     double deltax, deltay;
     deltax = maxx - minx;
     deltay = maxy - miny;
-    
+
     double scale;
-    if(abs(deltax) > abs(deltay)) {
+    if (abs(deltax) > abs(deltay)) {
         scale = deltax;
     }
     else {

@@ -31,8 +31,7 @@ bool handle_flags(int argc, char* argv[]) {
         return false;
     }
     // check if return type was correct
-    if(!(FLAGS_out_type == "normal" || FLAGS_out_type == "json" || FLAGS_out_type == "tikz")) {
-        // gflags::SetUsageMessage()
+    if (!(FLAGS_out_type == "normal" || FLAGS_out_type == "json" || FLAGS_out_type == "tikz")) {
         std::cerr << "Unrecognised output type option " << FLAGS_out_type << ", allowed are: normal, json, tikz" << std::endl;
         return false;
     }
@@ -40,7 +39,7 @@ bool handle_flags(int argc, char* argv[]) {
 }
 
 int main(int argc, char* argv[]) {
-    if(!handle_flags(argc, argv)) {
+    if (!handle_flags(argc, argv)) {
         return 1;
     }
 
@@ -48,12 +47,12 @@ int main(int argc, char* argv[]) {
     if (user_provided("in_file")) {
         rstream.open(FLAGS_in_file, std::ifstream::in);
     }
-    
+
     graph g;
     try {
         g = graphIO::read_graph(user_provided("in_file") ? rstream : std::cin, FLAGS_in_json, FLAGS_in_coords);
     }
-    catch(...) {
+    catch (...) {
         std::cerr << "Failed reading input, expected " << (FLAGS_in_json ? "json" : "normal") << " type with" << (FLAGS_in_coords ? "" : "out") << " coordinates" << std::endl;
         return 1;
     }
@@ -64,18 +63,20 @@ int main(int argc, char* argv[]) {
     }
 
     bool planar = !FLAGS_skip_planar && algo::drawPlanar(g);
-    
-    if(!planar) {
+
+    if (!planar) {
         if (FLAGS_transform == "full") {
             //algo::applyIntersections(g, FLAGS_iterations);
             algo::applySprings(g, FLAGS_iterations);
-        } else if (FLAGS_transform == "intersections") {
+        }
+        else if (FLAGS_transform == "intersections") {
             algo::applyIntersections(g, FLAGS_iterations);
-        } else if (FLAGS_transform == "springs") {
+        }
+        else if (FLAGS_transform == "springs") {
             algo::applySprings(g, FLAGS_iterations);
         }
     }
-    
+
 
     g.scaleToUnitSquare();
 
