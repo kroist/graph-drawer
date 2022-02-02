@@ -21,6 +21,7 @@ const double EPS = 1e-6;
 struct pnt {
     double x, y;
     pnt() {}
+    pnt(double _x, double _y): x(_x), y(_y) {}
     pnt(std::pair<double, double> pr): x(pr.first), y(pr.second) {}
 };
 
@@ -36,7 +37,7 @@ pnt vec(pnt a, pnt b) {
 }
 
 double fRep(pnt a, pnt b) {
-    return cRep / (dist(a, b)*dist(a, b));
+    return cRep / (dist(a, b));
 }
 
 double fSpring(pnt a, pnt b) {
@@ -69,6 +70,33 @@ pnt displacement(int v, int n, graph& g) {
     return res;
 }
 
+pnt get_projection(pnt a, pnt b, pnt p){
+    pnt ap(p.x - a.x, p.y - a.y);
+    pnt ab(b.x - a.x, b.y - a.y);
+    double cf = (ap.x * ab.x + ap.y * ab.y) / (ab.x * ab.x + ab.y * ab.y);
+    return pnt(a.x + ab.x * cf, a.y + ab.y * cf);
+}
+
+bool infit(pnt a, pnt b, pnt p){
+    return (p.x >= std::min(a.x, b.x) && p.x <= std::max(a.x, b.x)) && (p.y >= std::min(a.y, b.y) && p.y <= std::max(a.y, b.y));
+}
+
+pnt edge_displacement(int v, int n, graph& g){
+    pnt res;
+    res.x = res.y = 0;
+
+    for (auto edge : g.edges){
+        if (edge.first == v || edge.second == v)continue;
+        pnt proj = get_projection(g.positions[edge.first], g.positions[edge.second], g.positions[v]);
+        if (!infit(g.positions[edge.first], g.positions[edge.second], proj))continue;
+        double k = fRep(proj, pnt(g.positions[v]));
+        pnt cur = vec(proj, pnt(g.positions[v]));
+        res.x += cur.x*k;
+        res.y += cur.y*k;
+    }
+    return res;
+}
+
 double area(const pnt& a, const pnt& b, const pnt& c) {
     return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
 }
@@ -87,15 +115,20 @@ bool intersect(const pnt& a, const pnt& b, const pnt& c, const pnt& d) {
 void algo::applySprings(graph& g, int iterations) {
     int n = g.size;
     std::vector<pnt> dsp(n);
+    std::vector<pnt> edge_dsp(n);
     for (int iter = 0; iter < iterations; iter++) {
         #pragma omp parallel for num_threads(8)
         for (int i = 0; i < n; i++) {
             dsp[i] = displacement(i, n, g);
+            edge_dsp[i] = edge_displacement(i, n, g);
         }
         #pragma omp parallel for num_threads(8)
         for (int i = 0; i < n; i++) {
             g.positions[i].first += rate*dsp[i].x;
             g.positions[i].second += rate*dsp[i].y;
+
+            g.positions[i].first += rate * edge_dsp[i].x;
+            g.positions[i].second += rate * edge_dsp[i].y;
         }
     }
 }
