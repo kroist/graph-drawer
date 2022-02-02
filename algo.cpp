@@ -81,18 +81,10 @@ bool infit(pnt a, pnt b, pnt p){
     return (p.x >= std::min(a.x, b.x) && p.x <= std::max(a.x, b.x)) && (p.y >= std::min(a.y, b.y) && p.y <= std::max(a.y, b.y));
 }
 
-double edgeRep(pnt a, pnt b) {
-    return std::log(100 / (dist(a, b) * dist(a, b) + 1));
-
-    //return std::min(10.0, std::exp(1 / (dist(a, b)*dist(a, b))));
-}
-
 pnt edge_displacement(int v, int n, graph& g){
     pnt res;
     res.x = res.y = 0;
 
-    /* get neigbours of v */
-    auto is_neighbour = g.getNeighbours(v);
     for (auto edge : g.edges){
         if (edge.first == v || edge.second == v)continue;
         pnt proj = get_projection(g.positions[edge.first], g.positions[edge.second], g.positions[v]);
