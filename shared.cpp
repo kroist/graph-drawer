@@ -67,9 +67,11 @@ void graph::scaleToUnitSquare() {
     else {
         scale = deltay;
     }
-    for (auto& point : this->positions) {
-        point.first /= scale;
-        point.second /= scale;
+    if(abs(scale) >= 0.000001) {
+        for (auto& point : this->positions) {
+            point.first /= scale;
+            point.second /= scale;
+        }
     }
 }
 
