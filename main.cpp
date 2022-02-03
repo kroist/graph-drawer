@@ -18,7 +18,7 @@ DEFINE_bool(skip_planar, false, "Skip planarity checking & drawing");
 
 DEFINE_string(in_file, "", "Name of the input file");
 DEFINE_string(out_file, "", "Name of the output file");
-DEFINE_string(transform, "full", "Choose transformation type (allowed full, intersections, springs)");
+DEFINE_string(transform, "springs", "Choose transformation type (allowed intersections, springs)");
 DEFINE_string(out_type, "normal", "Set the output type (allowed normal, json, tikz)");
 
 DEFINE_int32(iterations, 10000, "Number of iterations");
@@ -26,8 +26,8 @@ DEFINE_int32(iterations, 10000, "Number of iterations");
 bool handle_flags(int argc, char* argv[]) {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
     // check if transform was correct
-    if (!(FLAGS_transform == "full" || FLAGS_transform == "intersections" || FLAGS_transform == "springs")) {
-        std::cerr << "Unrecognised transform option " << FLAGS_transform << ", allowed are: full, intersections, springs" << std::endl;
+    if (!(FLAGS_transform == "intersections" || FLAGS_transform == "springs")) {
+        std::cerr << "Unrecognised transform option " << FLAGS_transform << ", allowed are: intersections, springs" << std::endl;
         return false;
     }
     // check if return type was correct
@@ -65,11 +65,7 @@ int main(int argc, char* argv[]) {
     bool planar = !FLAGS_skip_planar && algo::drawPlanar(g);
 
     if (!planar) {
-        if (FLAGS_transform == "full") {
-            //algo::applyIntersections(g, FLAGS_iterations);
-            algo::applySprings(g, FLAGS_iterations);
-        }
-        else if (FLAGS_transform == "intersections") {
+        if (FLAGS_transform == "intersections") {
             algo::applyIntersections(g, FLAGS_iterations);
         }
         else if (FLAGS_transform == "springs") {

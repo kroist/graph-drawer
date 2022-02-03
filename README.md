@@ -17,14 +17,14 @@ cmake --build build
 | `--in_coords` | Assume that input contains coordinates |
 | `--in_file` | Set the name of the input file |
 | `--skip_planar` | Skip planarity checking & drawing |
-| `--transform` | Choose transformation type (allowed full, intersections, springs) |
+| `--transform` | Choose transformation type (allowed intersections, springs) |
 | `--out_type` | Set the output type (allowed normal, json, tikz) |
 | `--out_file` | Set the name of the output file |
 | `--iterations` | Set the number of iterations |
 
 ## Examples
 ```sh
-build/./drawer --in_file examples/0.json --in_json --transform full --skip_planar --out_type normal
+build/./drawer --in_file examples/0.json --in_json --skip_planar --out_type normal --transform springs
 ```
 ```sh
 build/./drawer --in_file examples/Goldner_Harary --out_type tikz
