@@ -61,13 +61,13 @@ void graph::scaleToUnitSquare() {
     deltay = maxy - miny;
 
     double scale;
-    if (abs(deltax) > abs(deltay)) {
+    if (fabs(deltax) > fabs(deltay)) {
         scale = deltax;
     }
     else {
         scale = deltay;
     }
-    if(abs(scale) >= 0.000001) {
+    if (fabs(scale) >= 0.000001) {
         for (auto& point : this->positions) {
             point.first /= scale;
             point.second /= scale;
