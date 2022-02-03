@@ -1,8 +1,12 @@
 # Graph drawer
 
 ## Usage
+### Installation on Arch Linux
+```sh
+yay -S graph-drawer
+```
 ### Compilation
-```console
+```sh
 cmake -B build
 cmake --build build
 ```
@@ -19,10 +23,10 @@ cmake --build build
 | `--iterations` | Set the number of iterations |
 
 ## Examples
-```console
+```sh
 build/./drawer --in_file examples/0.json --in_json --transform full --skip_planar --out_type normal
 ```
-```console
+```sh
 build/./drawer --in_file examples/Goldner_Harary --out_type tikz
 ```
 ## Graph formats
@@ -45,7 +49,7 @@ Positions array is optional. Nodes in edges array should be values from *0* to *
 ```
 * normal \
 If present (must be specified with `--in_coords` flag), the position list should have length *n*.
-```console
+```sh
 n m
 0 1.2 3.0
 ...
@@ -55,7 +59,7 @@ x_1 y_1
 x_m y_m
 ```
 or, if flag is not not specified:
-```console
+```sh
 n m
 x_1 y_1
 ...
